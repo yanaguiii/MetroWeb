@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Metrô de São Paulo - Calculadora de Rotas</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>Calculadora de Rotas do Metrô de São Paulo</h1>
+<select id="partida"></select>
+<select id="chegada"></select>
+<button onclick="calcularRota()">Calcular Rota</button>
+<div id="resultado"></div>
+
+<script>
+    axios.get('http://localhost:8080/api/metro/estacoes').then(response => {
+        const estacoes = response.data;
+        const selectPartida = document.getElementById('partida');
+        const selectChegada = document.getElementById('chegada');
+
+        estacoes.forEach(estacao => {
+            selectPartida.add(new Option(estacao, estacao));
+            selectChegada.add(new Option(estacao, estacao));
+        });
+    });
+
+    // Calcular rota
+    function calcularRota() {
+        const partida = document.getElementById('partida').value;
+        const chegada = document.getElementById('chegada').value;
+
+        axios.get(`http://localhost:8080/api/metro/rota?partida=${partida}&chegada=${chegada}`)
+            .then(response => {
+                document.getElementById('resultado').innerHTML = response.data;
+            });
+    }
+</script>
+</body>
+</html>
